@@ -4,7 +4,6 @@ We have been harnessing modern machine learning technologies to figure out which
 The prediction showed reliable outcome with mean absolute error of ₩30,000,000 which is considerably low when compared to the average price of property in Seoul in approximately ₩100,000,000. 
 
 ### Disclaimer
- - Please do not use DAIMŌ solely for investment purposes
  - Our software serves to help you find the best option for you but it won't tell you when to purchase the property 
     - Our algorithm does not do time series forecasting 
     - Our algorithm does not take account of macroeconomic or political events. It simply analyzes features of a residential property to estimate a resonable price for it 
@@ -21,7 +20,7 @@ The prediction showed reliable outcome with mean absolute error of ₩30,000,000
 ##### Backend (Django, EC2, Nginx, Postgresql)
 - Crawler keeps retrieving data from naver endpoint 
 - Gradient Boosting Regressor predicts price values 
-- Processes user requests and returned json data (REST API)
+- Processes user requests and returns json data (REST API)
     - Query requests ex) property list, favorites list 
     - Add to favorites request 
     - Retrieves Google OAuth token from the frontend and process user login (The backend simply uses the token to retrieve user information so it can be stored in the database and reused when the same user attempts to login again)
@@ -34,8 +33,6 @@ The prediction showed reliable outcome with mean absolute error of ₩30,000,000
 ```python
     def task_daimo(self):
         while(True):
-            # records when the crawling cycle started
-            time = datetime.now(tz=timezone.utc)
             
             # crawler 
             crawler = Crawler()
@@ -46,9 +43,6 @@ The prediction showed reliable outcome with mean absolute error of ₩30,000,000
             # get rid of data that is older than 3 months 
             GBR.delete_old_data()
             GBR.import_data()
-            # use data older than time variable as traning set 
-            GBR.train(time)
-            # predict values for data collected during this crawling cycle 
             GBR.predict()
 ```
 ### Gradient Boosting Regressor 
